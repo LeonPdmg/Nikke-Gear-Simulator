@@ -252,6 +252,262 @@
       .slot { flex-wrap:wrap; }
       .slot-actions { margin-left:58px; }
     }
+
+    /* CUSTOM TOGGLE SWITCH */
+    .confirm-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(30, 58, 85, 0.4);
+    }
+    .confirm-switch {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .confirm-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .confirm-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--bg3);
+      border: 1px solid var(--border);
+      transition: .2s;
+      border-radius: 20px;
+    }
+    .confirm-slider:before {
+      position: absolute;
+      content: "";
+      height: 12px;
+      width: 12px;
+      left: 3px;
+      bottom: 3px;
+      background-color: var(--textdim);
+      transition: .2s;
+      border-radius: 50%;
+    }
+    .confirm-switch input:checked + .confirm-slider {
+      background-color: rgba(0, 212, 255, 0.1);
+      border-color: var(--accent);
+    }
+    .confirm-switch input:checked + .confirm-slider:before {
+      transform: translateX(18px);
+      background-color: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+    .confirm-label {
+      font-size: 11px;
+      color: var(--textdim);
+      user-select: none;
+      cursor: pointer;
+    }
+
+    /* MODAL OVERLAY */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 6, 10, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-content {
+      background: var(--bg2);
+      border: 2px solid var(--border2);
+      box-shadow: 0 0 35px rgba(0, 212, 255, 0.25);
+      border-radius: 12px;
+      padding: 26px;
+      max-width: 780px;
+      width: 90%;
+      position: relative;
+      animation: modalSlideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    @keyframes modalSlideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      text-align: center;
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      color: var(--textbrt);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+    }
+    .modal-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--textdim);
+      margin-top: 4px;
+    }
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+    .comparison-col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .comparison-col h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--textdim);
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .modal-slots {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .comparison-arrow {
+      font-size: 24px;
+      color: var(--accent);
+      text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+      user-select: none;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .btn-modal {
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+    }
+    .btn-modal:active {
+      transform: scale(0.97);
+    }
+    .btn-keep-old {
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text);
+    }
+    .btn-keep-old:hover {
+      border-color: var(--red);
+      color: var(--red);
+      background: rgba(255, 59, 92, 0.05);
+    }
+    .btn-apply-new {
+      background: linear-gradient(135deg, #0a4a7a, #0068b0);
+      color: #fff;
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 16px rgba(0, 212, 255, 0.2);
+    }
+    .btn-apply-new:hover {
+      box-shadow: 0 0 24px rgba(0, 212, 255, 0.4);
+      filter: brightness(1.1);
+    }
+    @media(max-width: 680px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .comparison-arrow {
+        transform: rotate(90deg);
+        text-align: center;
+        margin: 4px 0;
+      }
+      .modal-actions {
+        flex-direction: column;
+      }
+    }
+
+    /* ODDS BUTTON AND ODDS TABLE IN MODAL */
+    .btn-view-odds {
+      padding: 9px 14px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--textdim);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn-view-odds:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0, 212, 255, 0.05);
+    }
+    .odds-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+    }
+    .odds-table th {
+      background: var(--bg3);
+      padding: 10px 12px;
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--textdim);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .odds-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(30, 58, 85, 0.4);
+      color: var(--text);
+    }
+    .odds-table tr:hover {
+      background: rgba(0, 212, 255, 0.03);
+    }
+    .odds-table td.pct-val {
+      text-align: center;
+      font-weight: 600;
+    }
+    .odds-table td.pct-zero {
+      text-align: center;
+      color: var(--textdim);
+      opacity: 0.5;
+    }
+    .odds-table td.pct-locked {
+      text-align: center;
+      color: var(--gold);
+      font-weight: 700;
+      text-shadow: 0 0 6px rgba(255, 200, 70, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -300,6 +556,14 @@
           Change Effects: <span id="cost-roll">—</span> &nbsp;|&nbsp;
           Reset Attributes: <span id="cost-phase">—</span>
         </div>
+        <div class="confirm-toggle-row">
+          <label class="confirm-switch">
+            <input type="checkbox" id="confirm-rolls" checked>
+            <span class="confirm-slider"></span>
+          </label>
+          <label for="confirm-rolls" class="confirm-label">Confirm before applying rolls</label>
+        </div>
+        <button class="btn-view-odds" onclick="openOddsModal()">📊 View Next Roll Odds</button>
         <div class="btn-legend">
           <div><b>🔄 Change Effects</b> — rerolls stats + phases on unlocked slots</div>
           <div><b>% Reset Attributes</b> — rerolls phase levels only (stats stay)</div>
@@ -346,6 +610,68 @@
 </div><!-- /app -->
 
 <div class="disclaimer">Just for fun — do not expect the same luck in game.</div>
+
+<div id="confirm-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Roll Result</h2>
+      <div class="modal-sub">Compare changes and choose which effects to keep</div>
+    </div>
+    
+    <div class="comparison-grid">
+      <!-- Left Column: Current Effects -->
+      <div class="comparison-col">
+        <h3>Current Effects</h3>
+        <div class="modal-slots" id="modal-old-slots"></div>
+      </div>
+      
+      <!-- Arrow separator -->
+      <div class="comparison-arrow">
+        <span>➔</span>
+      </div>
+      
+      <!-- Right Column: New Effects -->
+      <div class="comparison-col">
+        <h3>New Effects</h3>
+        <div class="modal-slots" id="modal-new-slots"></div>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-modal btn-keep-old" onclick="resolveConfirm(false)">Keep Current Effects</button>
+      <button class="btn-modal btn-apply-new" onclick="resolveConfirm(true)">Apply New Effects</button>
+    </div>
+  </div>
+</div>
+
+<div id="odds-modal" class="modal-overlay">
+  <div class="modal-content" style="max-width: 640px;">
+    <div class="modal-header">
+      <h2>Next Roll Odds</h2>
+      <div class="modal-sub" id="odds-modal-sub">// Probability of obtaining each stat on TOP, MID, and BOT slots</div>
+    </div>
+    
+    <div style="overflow-x: auto; margin-bottom: 20px;">
+      <table class="odds-table">
+        <thead>
+          <tr>
+            <th style="text-align: left;">Stat</th>
+            <th style="text-align: center;">TOP Slot (100%)</th>
+            <th style="text-align: center;">MID Slot (50%)</th>
+            <th style="text-align: center;">BOT Slot (30%)</th>
+          </tr>
+        </thead>
+        <tbody id="odds-modal-tbody">
+          <!-- Rows will be injected by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn-modal btn-keep-old" onclick="closeOddsModal()" style="border-color: var(--accent); color: var(--accent);">Close</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ══════════════════════════════════════════════
@@ -423,49 +749,295 @@ function rockCost(lc) { return 1+lc; }
 // ══════════════════════════════════════════════
 //  ACTIONS
 // ══════════════════════════════════════════════
+let pendingRoll = null;
+
+function getSlotPreviewHtml(slot, i) {
+  const hasData = slot.present && slot.stat;
+  let phaseClass = '';
+  let phaseTierLabel = '';
+  if (slot.phase === 15) {
+    phaseClass = 'phase-black';
+    phaseTierLabel = ' <span class="black-line-badge">BLACK LINE</span>';
+  } else if (slot.phase >= 12) {
+    phaseClass = 'phase-blue';
+  }
+
+  let contentHtml = hasData
+    ? `<div class="slot-content${slot.phase===15?' slot-black-line':''}">
+         <div class="slot-stat">${slot.stat}</div>
+         <div class="slot-phase-row">
+           <div class="slot-phase">Phase <span class="pnum ${phaseClass}">${slot.phase}</span>${phaseTierLabel}</div>
+           <div class="slot-statval ${phaseClass}">${pctStr(slot)}</div>
+         </div>
+       </div>`
+    : `<div class="slot-content"><div class="slot-stat" style="opacity:.25;font-size:12px">— EMPTY —</div></div>`;
+
+  return `
+    <div class="slot ${SLOT_CLS[i]}${slot.locked||slot.perm?' locked':''}${!hasData?' empty-slot':''}${slot.phase===15?' phase15-slot':''}">
+      <div class="slot-indicator"></div>
+      <div class="slot-label">${SLOT_LABELS[i]}<br><span style="font-size:9px;opacity:.4">${Math.round(SLOT_CHANCES[i]*100)}%</span></div>
+      ${contentHtml}
+    </div>`;
+}
+
 function doRoll() {
   const first = !gear().rolled;
   const lc = lockedCount(), cost = rockCost(lc);
+
+  // Pay cost immediately
   res.rocksUsed += cost; res.totalRolls++;
 
-  gear().slots.forEach((s,i) => {
+  // Deep clone slots
+  const oldSlots = JSON.parse(JSON.stringify(gear().slots));
+  const newSlots = JSON.parse(JSON.stringify(gear().slots));
+
+  // Determine presence and clear stats of unlocked slots
+  newSlots.forEach((s,i) => {
     if (s.locked||s.perm) return;
     s.present = (i===0) ? true : (Math.random()<SLOT_CHANCES[i]);
     s.stat=null; s.phase=null;
   });
+
   // Pre-seed exclusion pool with ALL locked stats first, regardless of slot order
-  const used = gear().slots
+  const used = newSlots
     .filter(s => (s.locked||s.perm) && s.stat)
     .map(s => s.stat);
 
-  gear().slots.forEach(s=>{
+  newSlots.forEach(s=>{
     if (s.locked||s.perm) return;
     if (!s.present) return;
     s.stat  = rollStat(used);
     s.phase = rollPhase(first);
     if (s.stat) used.push(s.stat);
   });
-  gear().rolled = true;
-  // Temp locks expire after rolling
-  gear().slots.forEach(s => { if (s.locked) s.locked = false; });
-  const lines = activeLines().map(({s,i})=>`${SLOT_LABELS[i]}:${s.stat} P${s.phase}(${pctStr(s)})`).join(' · ');
-  log('roll',`[${GEAR_PIECES[activeGear].name}] Change Effects (${cost} Rocks) → ${lines||'no lines'}`);
-  render();
+
+  // Temp locks expire after rolling regardless of confirmation decision
+  oldSlots.forEach(s => { if (s.locked) s.locked = false; });
+  newSlots.forEach(s => { if (s.locked) s.locked = false; });
+
+  const confirmRolls = document.getElementById('confirm-rolls').checked;
+  if (!confirmRolls || first) {
+    // Apply immediately
+    gear().slots = newSlots;
+    gear().rolled = true;
+    const lines = activeLines().map(({s,i})=>`${SLOT_LABELS[i]}:${s.stat} P${s.phase}(${pctStr(s)})`).join(' · ');
+    log('roll',`[${GEAR_PIECES[activeGear].name}] Change Effects (${cost} Rocks) → ${lines||'no lines'}`);
+    render();
+  } else {
+    // Store pending roll and show modal
+    pendingRoll = {
+      type: 'roll',
+      cost: cost,
+      costType: 'Rocks',
+      gearIdx: activeGear,
+      oldSlots: oldSlots,
+      newSlots: newSlots,
+      wasRolled: gear().rolled
+    };
+    showConfirmModal();
+  }
 }
 
 function doRerollPhase() {
   if (!gear().rolled) { log('info','Roll this gear piece first!'); return; }
   const lc = lockedCount(), cost = rockCost(lc);
+
+  // Pay cost immediately
   res.rocksUsed += cost; res.totalRolls++;
-  gear().slots.forEach(s=>{
+
+  // Deep clone slots
+  const oldSlots = JSON.parse(JSON.stringify(gear().slots));
+  const newSlots = JSON.parse(JSON.stringify(gear().slots));
+
+  newSlots.forEach(s=>{
     if (s.locked||s.perm||!s.present||!s.stat) return;
     s.phase = rollPhase(false);
   });
-  // Temp locks expire after rolling
-  gear().slots.forEach(s => { if (s.locked) s.locked = false; });
-  const lines = activeLines().map(({s,i})=>`${SLOT_LABELS[i]}:P${s.phase}(${pctStr(s)})`).join(' · ');
-  log('phase',`[${GEAR_PIECES[activeGear].name}] Reset Attributes (${cost} Rocks) → ${lines}`);
+
+  // Temp locks expire after rolling regardless of confirmation decision
+  oldSlots.forEach(s => { if (s.locked) s.locked = false; });
+  newSlots.forEach(s => { if (s.locked) s.locked = false; });
+
+  const confirmRolls = document.getElementById('confirm-rolls').checked;
+  if (!confirmRolls) {
+    gear().slots = newSlots;
+    const lines = activeLines().map(({s,i})=>`${SLOT_LABELS[i]}:P${s.phase}(${pctStr(s)})`).join(' · ');
+    log('phase',`[${GEAR_PIECES[activeGear].name}] Reset Attributes (${cost} Rocks) → ${lines}`);
+    render();
+  } else {
+    pendingRoll = {
+      type: 'phase',
+      cost: cost,
+      costType: 'Rocks',
+      gearIdx: activeGear,
+      oldSlots: oldSlots,
+      newSlots: newSlots,
+      wasRolled: gear().rolled
+    };
+    showConfirmModal();
+  }
+}
+
+function showConfirmModal() {
+  if (!pendingRoll) return;
+
+  const oldContainer = document.getElementById('modal-old-slots');
+  const newContainer = document.getElementById('modal-new-slots');
+
+  oldContainer.innerHTML = pendingRoll.oldSlots.map((s, i) => getSlotPreviewHtml(s, i)).join('');
+  newContainer.innerHTML = pendingRoll.newSlots.map((s, i) => getSlotPreviewHtml(s, i)).join('');
+
+  const modal = document.getElementById('confirm-modal');
+  modal.style.display = 'flex';
+  void modal.offsetWidth;
+  modal.classList.add('show');
+}
+
+function resolveConfirm(accept) {
+  const modal = document.getElementById('confirm-modal');
+  modal.classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 250);
+
+  if (!pendingRoll) return;
+
+  const gIdx = pendingRoll.gearIdx;
+  const cost = pendingRoll.cost;
+  const costType = pendingRoll.costType;
+
+  if (accept) {
+    gears[gIdx].slots = pendingRoll.newSlots;
+    gears[gIdx].rolled = true;
+
+    // Use a temp activeGear context to calculate lines properly
+    const origActive = activeGear;
+    activeGear = gIdx;
+    if (pendingRoll.type === 'roll') {
+      const lines = activeLines().map(({s,i})=>`${SLOT_LABELS[i]}:${s.stat} P${s.phase}(${pctStr(s)})`).join(' · ');
+      log('roll', `[${GEAR_PIECES[gIdx].name}] Change Effects applied (${cost} ${costType}) → ${lines||'no lines'}`);
+    } else {
+      const lines = activeLines().map(({s,i})=>`${SLOT_LABELS[i]}:P${s.phase}(${pctStr(s)})`).join(' · ');
+      log('phase', `[${GEAR_PIECES[gIdx].name}] Reset Attributes applied (${cost} ${costType}) → ${lines}`);
+    }
+    activeGear = origActive;
+  } else {
+    gears[gIdx].slots = pendingRoll.oldSlots;
+    gears[gIdx].rolled = pendingRoll.wasRolled;
+
+    if (pendingRoll.type === 'roll') {
+      log('info', `[${GEAR_PIECES[gIdx].name}] Change Effects discarded (${cost} ${costType}) — kept old effects`);
+    } else {
+      log('info', `[${GEAR_PIECES[gIdx].name}] Reset Attributes discarded (${cost} ${costType}) — kept old effects`);
+    }
+  }
+
+  pendingRoll = null;
   render();
+}
+
+function calculateSlotOdds() {
+  const trials = 10000;
+  const counts = [{}, {}, {}];
+  
+  // Initialize counts
+  STATS.forEach(s => {
+    counts[0][s.name] = 0;
+    counts[1][s.name] = 0;
+    counts[2][s.name] = 0;
+  });
+
+  const slots = gear().slots;
+  const lockedStats = slots
+    .filter(s => s.present && (s.locked || s.perm) && s.stat)
+    .map(s => s.stat);
+
+  for (let t = 0; t < trials; t++) {
+    const used = [...lockedStats];
+    
+    slots.forEach((s, i) => {
+      if (s.locked || s.perm) {
+        if (s.stat) {
+          counts[i][s.stat]++;
+        }
+        return;
+      }
+      
+      const isPresent = (i === 0) ? true : (Math.random() < SLOT_CHANCES[i]);
+      if (!isPresent) return;
+      
+      const selected = rollStat(used);
+      if (selected) {
+        counts[i][selected]++;
+        used.push(selected);
+      }
+    });
+  }
+
+  const odds = [{}, {}, {}];
+  STATS.forEach(s => {
+    odds[0][s.name] = (counts[0][s.name] / trials) * 100;
+    odds[1][s.name] = (counts[1][s.name] / trials) * 100;
+    odds[2][s.name] = (counts[2][s.name] / trials) * 100;
+  });
+  
+  return odds;
+}
+
+function openOddsModal() {
+  const odds = calculateSlotOdds();
+  const tbody = document.getElementById('odds-modal-tbody');
+  if (!tbody) return;
+
+  const slots = gear().slots;
+
+  // Sort stats by cumulative probability across all slots
+  const sortedStats = [...STATS].sort((a, b) => {
+    const sumA = odds[0][a.name] + odds[1][a.name] + odds[2][a.name];
+    const sumB = odds[0][b.name] + odds[1][b.name] + odds[2][b.name];
+    return sumB - sumA;
+  });
+
+  let html = '';
+  sortedStats.forEach(st => {
+    const name = st.name;
+    let rowHtml = `<tr><td>${name}</td>`;
+
+    for (let i = 0; i < 3; i++) {
+      const slot = slots[i];
+      const isLockedOnThisSlot = slot.present && (slot.locked || slot.perm) && slot.stat === name;
+      
+      if (isLockedOnThisSlot) {
+        rowHtml += `<td class="pct-locked">LOCKED</td>`;
+      } else {
+        const pct = odds[i][name];
+        if (pct < 0.01) {
+          rowHtml += `<td class="pct-zero">0%</td>`;
+        } else {
+          rowHtml += `<td class="pct-val">${pct.toFixed(1)}%</td>`;
+        }
+      }
+    }
+    rowHtml += `</tr>`;
+    html += rowHtml;
+  });
+
+  tbody.innerHTML = html;
+
+  document.getElementById('odds-modal-sub').textContent = `// Probability of obtaining each stat on TOP, MID, and BOT slots for ${GEAR_PIECES[activeGear].name}`;
+
+  const modal = document.getElementById('odds-modal');
+  modal.style.display = 'flex';
+  void modal.offsetWidth;
+  modal.classList.add('show');
+}
+
+function closeOddsModal() {
+  const modal = document.getElementById('odds-modal');
+  modal.classList.remove('show');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 250);
 }
 
 // Count all currently locked slots (temp + perm) on current gear, excluding a given index
