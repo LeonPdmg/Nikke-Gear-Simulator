@@ -735,7 +735,7 @@
 </head>
 <body>
 <script>
-  if (localStorage.getItem('theme') === 'light') {
+  if (localStorage.getItem('ngs_theme') === 'light') {
     document.body.classList.add('light-theme');
   }
 </script>
@@ -1667,7 +1667,7 @@ function toggleProb() { document.getElementById('prob-panel').classList.toggle('
 //  THEME TOGGLE
 // ══════════════════════════════════════════════
 function initTheme() {
-  const saved = localStorage.getItem('theme');
+  const saved = localStorage.getItem('ngs_theme');
   if (saved === 'light') {
     document.body.classList.add('light-theme');
     updateThemeUI(true);
@@ -1678,7 +1678,7 @@ function initTheme() {
 
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  localStorage.setItem('ngs_theme', isLight ? 'light' : 'dark');
   updateThemeUI(isLight);
 }
 
