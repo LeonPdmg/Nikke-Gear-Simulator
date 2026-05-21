@@ -6,736 +6,11 @@
   <title>NIKKE Gear Simulator</title>
   <link rel="icon" type="image/png" href="Rock.png" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg:      #080c12;
-      --bg2:     #0d1520;
-      --bg3:     #111d2e;
-      --panel:   #0b1624;
-      --border:  #1e3a55;
-      --border2: #2a5a80;
-      --accent:  #00d4ff;
-      --gold:    #ffc846;
-      --green:   #39ff8a;
-      --red:     #ff3b5c;
-      --purple:  #a855f7;
-      --orange:  #ff6b35;
-      --text:    #c8e0f0;
-      --textdim: #4a7090;
-      --textbrt: #ffffff;
-      --stop:    #00d4ff;
-      --smid:    #a855f7;
-      --sbot:    #ff6b35;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
-    body::before { content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
-      background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px); }
-    body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-      background-image: linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);
-      background-size: 40px 40px; }
-    .app { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:24px 16px 60px; }
-
-    /* TITLE IMAGE */
-    .title-img-wrap { display:flex; justify-content:center; margin: 4px 0 2px; }
-    .title-img { max-width: min(680px, 92vw); width: 100%; height: auto; display:block; filter: drop-shadow(0 0 18px rgba(0,212,255,.25)); }
-
-    /* UNIVERSAL RESET ROW */
-    .universal-reset-row { display:flex; gap:8px; margin-top:12px; }
-    .btn-reset-all { flex:1; padding:10px 14px; border-radius:6px; background:transparent; border:1px solid var(--border2); color:var(--textdim); font-family:'Inter',sans-serif; font-size:12px; font-weight:600; letter-spacing:.5px; cursor:pointer; transition:all .15s; }
-    .btn-reset-all:hover { border-color:var(--accent); color:var(--accent); }
-    .btn-reset-danger:hover { border-color:var(--red) !important; color:var(--red) !important; }
-
-    /* HEADER */
-    header { text-align:center; margin-bottom:24px; padding-bottom:18px; border-bottom:1px solid var(--border); position:relative; }
-    header::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:200px; height:2px;
-      background:linear-gradient(90deg,transparent,var(--accent),transparent); }
-    .header-sub { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:6px; color:var(--accent); margin-bottom:6px; opacity:.8; }
-    header h1 { display:none; }
-
-    /* RESOURCES */
-    .resource-bar { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-bottom:22px; }
-    .res-card { background:var(--panel); border:1px solid var(--border); border-radius:6px; padding:9px 16px; display:flex; align-items:center; gap:10px; min-width:130px; }
-    .res-icon { font-size:18px; }
-    .gear-icon { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
-    .res-label { font-size:10px; letter-spacing:2px; color:var(--textdim); text-transform:uppercase; }
-    .res-value { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; color:var(--gold); line-height:1; }
-    .res-value.bump { animation:bump .2s ease; }
-    @keyframes bump { 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
-
-    /* Slot machine roll animation */
-    @keyframes slotRoll {
-      0%   { transform: translateY(-70%); opacity: 0; }
-      35%  { transform: translateY(15%);  opacity: 1; }
-      65%  { transform: translateY(-6%);  opacity: 1; }
-      82%  { transform: translateY(3%);   opacity: 1; }
-      100% { transform: translateY(0%);   opacity: 1; }
-    }
-    .res-value.rolling {
-      animation: slotRoll 0.5s cubic-bezier(.22,.68,0,1.2) forwards;
-    }
-
-    /* MAIN LAYOUT */
-    .main-layout { display:grid; grid-template-columns:1fr 320px; gap:18px; align-items:start; }
-    .left-col { display:flex; flex-direction:column; gap:0; }
-    .right-col { display:flex; flex-direction:column; gap:18px; position:sticky; top:16px; }
-    @media(max-width:820px){ .main-layout { grid-template-columns:1fr; } .right-col { position:static; } }
-
-    /* GEAR TABS */
-    .gear-tabs { display:flex; gap:0; margin-bottom:0; border-radius:10px 10px 0 0; overflow:hidden; border:1px solid var(--border); border-bottom:none; }
-    .gear-tab { flex:1; padding:11px 6px; background:var(--bg3); border:none; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px;
-      font-family:'Inter',sans-serif; font-size:12px; font-weight:600; color:var(--textdim); letter-spacing:1px; text-transform:uppercase;
-      transition:all .2s; border-right:1px solid var(--border); position:relative; }
-    .gear-tab:last-child { border-right:none; }
-    .gear-tab:hover { background:var(--bg2); color:var(--text); }
-    .gear-tab.active { background:var(--bg2); color:var(--textbrt); }
-    .gear-tab.active::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background:var(--accent); }
-    .gear-tab.active.rolled::after { background:var(--gold); }
-    .tab-icon { font-size:18px; line-height:1; }
-    .tab-dot { width:6px; height:6px; border-radius:50%; background:var(--textdim); margin-top:1px; }
-    .gear-tab.rolled .tab-dot { background:var(--gold); box-shadow:0 0 6px var(--gold); }
-    .gear-tab.active .tab-dot { background:var(--accent); box-shadow:0 0 6px var(--accent); }
-    .gear-tab.active.rolled .tab-dot { background:var(--gold); box-shadow:0 0 6px var(--gold); }
-
-    /* GEAR CARD */
-    .gear-card { background:var(--bg2); border:1px solid var(--border); border-top:none; border-radius:0 0 10px 10px; padding:20px; position:relative; overflow:hidden; }
-    .gear-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--accent),var(--smid),var(--sbot)); }
-    .gear-title-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-    .gear-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:2px; color:var(--textbrt); }
-    .gear-badge { font-family:'DM Mono',monospace; font-size:10px; padding:2px 7px; border-radius:3px; letter-spacing:1px; }
-    .badge-fresh  { background:rgba(0,212,255,.1);  border:1px solid var(--accent); color:var(--accent); }
-    .badge-rolled { background:rgba(255,200,70,.1); border:1px solid var(--gold);   color:var(--gold); }
-
-    /* SLOTS */
-    .slots-grid { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
-    .slot { background:var(--panel); border-radius:7px; border:1px solid var(--border); padding:11px 13px; display:flex; align-items:center; gap:9px; transition:border-color .2s,background .2s; }
-    .slot.locked { border-color:var(--gold); background:rgba(255,200,70,.04); }
-    .slot.empty-slot { opacity:.4; border-style:dashed; }
-    .slot.highlight { animation:slotHL .5s ease; }
-    @keyframes slotHL { 0%{background:rgba(0,212,255,.18)} 100%{background:var(--panel)} }
-    .slot-indicator { width:4px; height:36px; border-radius:2px; flex-shrink:0; }
-    .slot-top .slot-indicator { background:var(--stop); box-shadow:0 0 8px var(--stop); }
-    .slot-mid .slot-indicator { background:var(--smid); box-shadow:0 0 8px var(--smid); }
-    .slot-bot .slot-indicator { background:var(--sbot); box-shadow:0 0 8px var(--sbot); }
-    .slot-label { font-family:'DM Mono',monospace; font-size:10px; color:var(--textdim); letter-spacing:1px; width:46px; flex-shrink:0; }
-    .slot-content { flex:1; }
-    .slot-stat { font-size:14px; font-weight:700; color:var(--textbrt); line-height:1.2; }
-    .slot-phase-row { display:flex; align-items:center; gap:8px; margin-top:2px; }
-    .slot-phase { font-family:'DM Mono',monospace; font-size:11px; color:var(--textdim); }
-    .slot-phase .pnum { color:var(--accent); font-weight:700; }
-    .slot-statval { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; color:var(--green); }
-
-    /* Phase tier colours */
-    .phase-blue { color: #00aaff !important; text-shadow: 0 0 6px rgba(0,170,255,.6); }
-    .phase-black { color: #111 !important; text-shadow: none; }
-
-    /* Black line slot — dark bg, high contrast */
-    .slot-black-line { background: linear-gradient(90deg, rgba(0,0,0,.6), rgba(20,20,20,.4)); border-radius: 4px; padding: 2px 4px; }
-    .slot-black-line .slot-stat { color: #fff; }
-    .slot-black-line .slot-phase { color: #aaa; }
-    .slot.slot-top.locked.slot-black-line,
-    .slot.slot-mid.locked.slot-black-line,
-    .slot.slot-bot.locked.slot-black-line { background: rgba(20,20,20,.5); }
-
-    .black-line-badge {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 1px;
-      background: #111;
-      color: #fff;
-      border-radius: 3px;
-      padding: 1px 5px;
-      margin-left: 4px;
-      vertical-align: middle;
-      text-transform: uppercase;
-      border: 1px solid #333;
-    }
-
-    /* Phase 15 whole-slot dark treatment */
-    .phase15-slot {
-      background: linear-gradient(90deg, #0a0a0a, #141414) !important;
-      border-color: #333 !important;
-    }
-    .phase15-slot .slot-stat { color: #ffffff; }
-    .phase15-slot .slot-phase { color: #888; }
-    .slot-actions { display:flex; gap:4px; flex-shrink:0; }
-    .btn-lock { padding:3px 8px; border-radius:4px; font-family:'Inter',sans-serif; font-size:11px; font-weight:600; letter-spacing:1px; cursor:pointer; transition:all .15s; border:1px solid var(--border2); background:transparent; color:var(--textdim); white-space:nowrap; }
-    .btn-lock:hover { border-color:var(--gold); color:var(--gold); }
-    .btn-lock.is-locked { background:rgba(255,200,70,.15); border-color:var(--gold); color:var(--gold); }
-    .btn-lock.is-perm   { background:rgba(255,200,70,.25); border-color:var(--gold); color:var(--gold); }
-
-    /* ACTION BUTTONS */
-    .actions-row { display:flex; gap:8px; flex-wrap:wrap; }
-    .btn-primary { flex:1; min-width:100px; padding:11px 14px; border-radius:6px; border:none; font-family:'Syne',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all .15s; position:relative; overflow:hidden; }
-    .btn-primary:hover::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,.07); }
-    .btn-primary:active { transform:scale(.97); }
-    .btn-roll  { background:linear-gradient(135deg,#0a4a7a,#0068b0); color:#fff; border:1px solid var(--accent);  box-shadow:0 0 16px rgba(0,212,255,.15); }
-    .btn-phase { background:linear-gradient(135deg,#501800,#803000); color:#fff; border:1px solid var(--sbot);    box-shadow:0 0 16px rgba(255,107,53,.15); }
-    .btn-secondary { padding:11px 14px; border-radius:6px; background:transparent; border:1px solid var(--border2); color:var(--textdim); font-family:'Inter',sans-serif; font-size:13px; font-weight:600; letter-spacing:1px; cursor:pointer; transition:all .15s; }
-    .btn-secondary:hover { border-color:var(--red); color:var(--red); }
-
-    /* COST + LEGEND */
-    .cost-preview { margin-top:9px; padding:8px 12px; background:rgba(0,0,0,.3); border:1px solid var(--border); border-radius:6px; font-family:'DM Mono',monospace; font-size:11px; color:var(--textdim); display:flex; gap:12px; flex-wrap:wrap; }
-    .cost-preview span { color:var(--gold); }
-    .btn-legend { margin-top:8px; padding:8px 12px; background:rgba(0,0,0,.2); border:1px solid var(--border); border-radius:6px; font-size:11px; color:var(--textdim); display:flex; flex-direction:column; gap:3px; }
-    .btn-legend b { color:var(--text); }
-
-    /* STATS PANEL */
-    .stats-panel { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:18px; position:relative; overflow:hidden; }
-    .stats-panel::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--green),var(--accent)); }
-    .stats-panel-title { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; letter-spacing:2px; color:var(--textbrt); margin-bottom:3px; }
-    .stats-panel-sub { font-family:'DM Mono',monospace; font-size:10px; color:var(--textdim); margin-bottom:14px; }
-
-    .stat-row { margin-bottom:11px; }
-    .stat-row-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px; }
-    .stat-name { font-size:12px; font-weight:600; color:var(--text); }
-    .stat-total { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--green); }
-    .stat-total.zero { color:var(--textdim); }
-    .stat-bar-bg { height:4px; background:rgba(255,255,255,.05); border-radius:3px; overflow:hidden; }
-    .stat-bar-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--accent),var(--green)); transition:width .5s cubic-bezier(.4,0,.2,1); }
-    .stat-sources { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; }
-    .stat-chip { font-family:'DM Mono',monospace; font-size:9px; padding:1px 6px; border-radius:8px; border:1px solid var(--border); color:var(--textdim); white-space:nowrap; }
-    /* gear piece colours */
-    .gc-0 { border-color:#00d4ff55; color:#00d4ff; }
-    .gc-1 { border-color:#a855f755; color:#a855f7; }
-    .gc-2 { border-color:#39ff8a55; color:#39ff8a; }
-    .gc-3 { border-color:#ffc84655; color:#ffc846; }
-    /* slot colours within chip label */
-    .no-stats-msg { text-align:center; padding:28px 10px; font-family:'DM Mono',monospace; font-size:11px; color:var(--textdim); line-height:1.8; }
-
-    /* LOG */
-    .log-section { margin-top:18px; }
-    .log-title { font-family:'Syne',sans-serif; font-size:11px; letter-spacing:3px; color:var(--textdim); text-transform:uppercase; margin-bottom:7px; padding-bottom:5px; border-bottom:1px solid var(--border); }
-    .log-list { display:flex; flex-direction:column; gap:3px; max-height:160px; overflow-y:auto; padding-right:3px; }
-    .log-list::-webkit-scrollbar { width:3px; }
-    .log-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-    .log-entry { font-family:'DM Mono',monospace; font-size:10px; color:var(--textdim); padding:4px 8px; border-radius:4px; background:rgba(0,0,0,.2); display:flex; align-items:baseline; gap:6px; animation:logIn .2s ease; }
-    @keyframes logIn { from{opacity:0;transform:translateX(-6px)} }
-    .log-num { opacity:.35; min-width:26px; }
-    .ev-roll  { color:var(--accent); }
-    .ev-phase { color:var(--orange); }
-    .ev-lock  { color:var(--gold); }
-    .ev-reset { color:var(--red); }
-    .ev-info  { color:var(--textdim); }
-
-    /* REF TABLE */
-    .prob-toggle { margin-top:18px; text-align:center; }
-    .btn-toggle { background:transparent; border:1px solid var(--border); color:var(--textdim); font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; padding:6px 14px; border-radius:4px; cursor:pointer; transition:all .15s; }
-    .btn-toggle:hover { border-color:var(--accent); color:var(--accent); }
-    .prob-panel { margin-top:10px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; overflow:hidden; display:none; }
-    .prob-panel.open { display:block; }
-    table { width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:11px; }
-    thead th { background:var(--bg3); padding:8px 11px; text-align:left; font-size:9px; letter-spacing:2px; color:var(--textdim); text-transform:uppercase; border-bottom:1px solid var(--border); }
-    tbody tr { border-bottom:1px solid rgba(30,58,85,.4); }
-    tbody tr:last-child { border-bottom:none; }
-    tbody tr:hover { background:rgba(0,212,255,.03); }
-    tbody td { padding:7px 11px; color:var(--text); }
-    tbody td:first-child { font-family:'Inter',sans-serif; font-weight:600; font-size:13px; color:var(--textbrt); }
-    .td-c { color:var(--accent); }
-    .td-p { color:var(--green); font-size:10px; }
-
-    .disclaimer { text-align:center; padding:24px 16px 12px; font-family:'DM Mono',monospace; font-size:11px; color:var(--textdim); letter-spacing:1px; opacity:.6; }
-
-    /* Manual stat picker */
-    .slot-picker { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; align-items:center; }
-    .slot-picker select { background:var(--bg3); border:1px solid var(--border2); color:var(--text); font-family:'Inter',sans-serif; font-size:12px; padding:4px 7px; border-radius:5px; cursor:pointer; flex:1; min-width:80px; }
-    .slot-picker select:focus { outline:none; border-color:var(--accent); }
-    .btn-edit-slot { padding:3px 7px; border-radius:4px; font-size:10px; font-weight:600; cursor:pointer; border:1px solid var(--border2); background:transparent; color:var(--textdim); transition:all .15s; flex-shrink:0; }
-    .btn-edit-slot:hover { border-color:var(--accent); color:var(--accent); }
-    .btn-set-slot  { padding:4px 10px; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid var(--accent); background:rgba(0,212,255,.1); color:var(--accent); transition:all .15s; }
-    .btn-set-slot:hover { background:rgba(0,212,255,.2); }
-    .btn-clear-slot { padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--textdim); transition:all .15s; }
-    .btn-clear-slot:hover { border-color:var(--red); color:var(--red); }
-
-    @media(max-width:500px){
-      .actions-row { flex-direction:column; }
-      .slot { flex-wrap:wrap; }
-      .slot-actions { margin-left:58px; }
-    }
-
-    /* CUSTOM TOGGLE SWITCH */
-    .confirm-toggle-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(30, 58, 85, 0.4);
-    }
-    .confirm-switch {
-      position: relative;
-      display: inline-block;
-      width: 38px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-    .confirm-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .confirm-slider {
-      position: absolute;
-      cursor: pointer;
-      inset: 0;
-      background-color: var(--bg3);
-      border: 1px solid var(--border);
-      transition: .2s;
-      border-radius: 20px;
-    }
-    .confirm-slider:before {
-      position: absolute;
-      content: "";
-      height: 12px;
-      width: 12px;
-      left: 3px;
-      bottom: 3px;
-      background-color: var(--textdim);
-      transition: .2s;
-      border-radius: 50%;
-    }
-    .confirm-switch input:checked + .confirm-slider {
-      background-color: rgba(0, 212, 255, 0.1);
-      border-color: var(--accent);
-    }
-    .confirm-switch input:checked + .confirm-slider:before {
-      transform: translateX(18px);
-      background-color: var(--accent);
-      box-shadow: 0 0 6px var(--accent);
-    }
-    .confirm-label {
-      font-size: 11px;
-      color: var(--textdim);
-      user-select: none;
-      cursor: pointer;
-    }
-
-    /* MODAL OVERLAY */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(4, 6, 10, 0.85);
-      backdrop-filter: blur(8px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-    .modal-overlay.show {
-      display: flex;
-      opacity: 1;
-    }
-    .modal-content {
-      background: var(--bg2);
-      border: 2px solid var(--border2);
-      box-shadow: 0 0 35px rgba(0, 212, 255, 0.25);
-      border-radius: 12px;
-      padding: 26px;
-      max-width: 780px;
-      width: 90%;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      animation: modalSlideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
-    }
-    .modal-body {
-      flex: 1;
-      overflow-y: auto;
-      margin-bottom: 20px;
-      padding-right: 4px;
-      -webkit-overflow-scrolling: touch;
-    }
-    .modal-body::-webkit-scrollbar {
-      width: 4px;
-    }
-    .modal-body::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 2px;
-    }
-    @keyframes modalSlideUp {
-      from { transform: translateY(30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-    .modal-header {
-      text-align: center;
-      margin-bottom: 22px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-    .modal-header h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      color: var(--textbrt);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
-    }
-    .modal-sub {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--textdim);
-      margin-top: 4px;
-    }
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 16px;
-      align-items: center;
-      margin-bottom: 26px;
-    }
-    .comparison-col {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .comparison-col h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: var(--textdim);
-      text-transform: uppercase;
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .modal-slots {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .comparison-arrow {
-      font-size: 24px;
-      color: var(--accent);
-      text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
-      user-select: none;
-    }
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-    }
-    .btn-modal {
-      padding: 12px 24px;
-      border-radius: 6px;
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.15s;
-      border: none;
-    }
-    .btn-modal:active {
-      transform: scale(0.97);
-    }
-    .btn-keep-old {
-      background: transparent;
-      border: 1px solid var(--border2);
-      color: var(--text);
-    }
-    .btn-keep-old:hover {
-      border-color: var(--red);
-      color: var(--red);
-      background: rgba(255, 59, 92, 0.05);
-    }
-    .btn-apply-new {
-      background: linear-gradient(135deg, #0a4a7a, #0068b0);
-      color: #fff;
-      border: 1px solid var(--accent);
-      box-shadow: 0 0 16px rgba(0, 212, 255, 0.2);
-    }
-    .btn-apply-new:hover {
-      box-shadow: 0 0 24px rgba(0, 212, 255, 0.4);
-      filter: brightness(1.1);
-    }
-    @media(max-width: 680px) {
-      .modal-content {
-        padding: 14px;
-        max-width: 96%;
-        width: 96%;
-        max-height: 95vh;
-      }
-      .modal-header {
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-      }
-      .modal-header h2 {
-        font-size: 16px;
-        letter-spacing: 1px;
-      }
-      .modal-sub {
-        font-size: 9px;
-      }
-      .comparison-grid {
-        grid-template-columns: 1fr auto 1fr;
-        gap: 6px;
-        margin-bottom: 0;
-      }
-      .comparison-col h3 {
-        font-size: 9px;
-        letter-spacing: 0.5px;
-        margin-bottom: 4px;
-        text-align: center;
-      }
-      .modal-slots {
-        gap: 4px;
-      }
-      .modal-slots .slot {
-        padding: 5px 6px;
-        gap: 4px;
-        border-radius: 4px;
-      }
-      .modal-slots .slot-indicator {
-        width: 3px;
-        height: 22px;
-      }
-      .modal-slots .slot-label {
-        font-size: 8px;
-        width: 24px;
-        line-height: 1.1;
-      }
-      .modal-slots .slot-label br,
-      .modal-slots .slot-label span {
-        display: none;
-      }
-      .modal-slots .slot-stat {
-        font-size: 10px;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .modal-slots .slot-phase {
-        font-size: 8px;
-      }
-      .modal-slots .slot-statval {
-        font-size: 9px;
-      }
-      .comparison-arrow {
-        font-size: 14px;
-        text-shadow: none;
-      }
-      .modal-actions {
-        flex-direction: row;
-        gap: 8px;
-      }
-      .btn-modal {
-        padding: 8px 10px;
-        font-size: 9px;
-        flex: 1;
-        text-align: center;
-        white-space: nowrap;
-      }
-    }
-
-    @media(max-width: 480px) {
-      .comparison-grid {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        margin-bottom: 0;
-      }
-      .comparison-arrow {
-        transform: rotate(90deg);
-        text-align: center;
-        margin: 2px 0;
-      }
-      .modal-slots .slot-label {
-        font-size: 9px;
-        width: 46px;
-      }
-      .modal-slots .slot-label br,
-      .modal-slots .slot-label span {
-        display: inline;
-      }
-      .modal-slots .slot-stat {
-        font-size: 12px;
-        white-space: normal;
-        overflow: visible;
-        text-overflow: clip;
-      }
-      .modal-actions {
-        flex-direction: column;
-        gap: 8px;
-      }
-      .btn-modal {
-        padding: 10px 12px;
-        font-size: 10px;
-        width: 100%;
-      }
-    }
-
-    /* ODDS BUTTON AND ODDS TABLE IN MODAL */
-    .btn-view-odds {
-      padding: 9px 14px;
-      border-radius: 6px;
-      background: transparent;
-      border: 1px solid var(--border2);
-      color: var(--textdim);
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.15s;
-      width: 100%;
-      margin-top: 8px;
-    }
-    .btn-view-odds:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(0, 212, 255, 0.05);
-    }
-    .odds-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-    }
-    .odds-table th {
-      background: var(--bg3);
-      padding: 10px 12px;
-      font-size: 10px;
-      letter-spacing: 1px;
-      color: var(--textdim);
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
-    }
-    .odds-table td {
-      padding: 10px 12px;
-      border-bottom: 1px solid rgba(30, 58, 85, 0.4);
-      color: var(--text);
-    }
-    .odds-table tr:hover {
-      background: rgba(0, 212, 255, 0.03);
-    }
-    .odds-table td.pct-val {
-      text-align: center;
-      font-weight: 600;
-    }
-    .odds-table td.pct-zero {
-      text-align: center;
-      color: var(--textdim);
-      opacity: 0.5;
-    }
-    .odds-table td.pct-locked {
-      text-align: center;
-      color: var(--gold);
-      font-weight: 700;
-      text-shadow: 0 0 6px rgba(255, 200, 70, 0.3);
-    }
-
-    /* LIGHT THEME */
-    body.light-theme {
-      --bg:      #f0f4f8;
-      --bg2:     #ffffff;
-      --bg3:     #e2e8f0;
-      --panel:   #f8fafc;
-      --border:  #cbd5e1;
-      --border2: #94a3b8;
-      --accent:  #0086b3;
-      --gold:    #c28a00;
-      --green:   #0d9488;
-      --red:     #e11d48;
-      --purple:  #8b5cf6;
-      --orange:  #ea580c;
-      --text:    #1e293b;
-      --textdim: #64748b;
-      --textbrt: #0f172a;
-      --stop:    #0086b3;
-      --smid:    #8b5cf6;
-      --sbot:    #ea580c;
-    }
-    body.light-theme::after {
-      background-image: linear-gradient(rgba(0,134,179,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,134,179,.035) 1px,transparent 1px);
-    }
-    body.light-theme::before {
-      background: none;
-    }
-    body.light-theme .phase-blue {
-      color: #006699 !important;
-      text-shadow: none;
-    }
-    body.light-theme .log-entry {
-      background: rgba(0, 0, 0, 0.04);
-    }
-    body.light-theme .btn-legend {
-      background: rgba(0, 0, 0, 0.03);
-    }
-    body.light-theme .cost-preview {
-      background: rgba(0, 0, 0, 0.04);
-    }
-    body.light-theme .btn-roll {
-      box-shadow: 0 0 16px rgba(0, 134, 179, 0.15);
-    }
-    body.light-theme .btn-phase {
-      box-shadow: 0 0 16px rgba(234, 88, 12, 0.15);
-    }
-
-    .theme-toggle {
-      position: absolute;
-      top: 24px;
-      right: 16px;
-      z-index: 100;
-    }
-    .btn-theme {
-      background: var(--bg2);
-      border: 1px solid var(--border2);
-      color: var(--text);
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    }
-    .btn-theme:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
-    }
-    @media (max-width: 600px) {
-      .theme-toggle {
-        position: static;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 12px;
-      }
-      .resource-bar {
-        gap: 6px;
-      }
-      .res-card {
-        flex: 1;
-        min-width: 0;
-        padding: 8px 6px;
-        gap: 6px;
-        justify-content: center;
-      }
-      .res-icon, .gear-icon {
-        width: 24px;
-        height: 24px;
-      }
-      .res-label {
-        font-size: 8px;
-        letter-spacing: 0.5px;
-      }
-      .res-value {
-        font-size: 15px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="index.css?v=1.0.6" />
 </head>
 <body>
 <script>
-  if (localStorage.getItem('ngs_theme') === 'light') {
+  if (localStorage.getItem('nikke_theme') === 'light') {
     document.body.classList.add('light-theme');
   }
 </script>
@@ -836,10 +111,30 @@
     <button class="btn-toggle" onclick="toggleProb()">▼ STAT &amp; PHASE REFERENCE</button>
   </div>
   <div class="prob-panel" id="prob-panel">
-    <table>
-      <thead><tr><th>Stat</th><th>Chance</th><th>P1</th><th>P5</th><th>P10</th><th>P11</th><th>P15</th></tr></thead>
-      <tbody id="ref-tbody"></tbody>
-    </table>
+    <div class="ref-container">
+      <div class="ref-subtitle">// Select a Phase level to inspect the exact values for each stat</div>
+      <div class="ref-phase-grid" id="ref-phase-grid">
+        <!-- Injected by JavaScript -->
+      </div>
+      <div class="ref-details" id="ref-details">
+        <div class="ref-details-header">
+          <div class="ref-details-title">Selected: <span id="ref-selected-phase-num">Phase 11</span></div>
+          <div class="ref-details-odds">Roll Chance: <span id="ref-selected-phase-odds">1.0%</span></div>
+        </div>
+        <table class="ref-table">
+          <thead>
+            <tr>
+              <th style="text-align: left;">Stat</th>
+              <th style="text-align: center;">Base Chance</th>
+              <th style="text-align: right;">Value</th>
+            </tr>
+          </thead>
+          <tbody id="ref-tbody">
+            <!-- Injected by JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
 </div><!-- /app -->
@@ -1650,14 +945,65 @@ function log(type, msg) {
 // ══════════════════════════════════════════════
 //  REF TABLE
 // ══════════════════════════════════════════════
-function buildRefTable() {
+let refSelectedPhase = 11;
+
+function selectRefPhase(phaseNum) {
+  refSelectedPhase = phaseNum;
+  renderRefSection();
+}
+
+function renderRefSection() {
+  const grid = document.getElementById('ref-phase-grid');
   const tbody = document.getElementById('ref-tbody');
-  STATS.forEach(s=>{
-    const p=s.phases;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${s.name}</td><td class="td-c">${(s.weight/STAT_WEIGHT_TOTAL*100).toFixed(1)}%</td>
-      <td class="td-p">${p[0]}%</td><td class="td-p">${p[4]}%</td><td class="td-p">${p[9]}%</td>
-      <td class="td-p">${p[10]}%</td><td class="td-p">${p[14]}%</td>`;
+  if (!grid || !tbody) return;
+
+  grid.innerHTML = '';
+  for (let p = 1; p <= 15; p++) {
+    const weight = PHASE_WEIGHTS[p - 1];
+    const prob = weight.toFixed(1) + '%';
+    
+    const tile = document.createElement('button');
+    tile.type = 'button';
+    tile.className = `ref-phase-tile${p === refSelectedPhase ? ' active' : ''}`;
+    tile.onclick = () => selectRefPhase(p);
+    
+    let tierClass = '';
+    if (p === 15) tierClass = 'tile-black';
+    else if (p >= 12) tierClass = 'tile-blue';
+
+    tile.innerHTML = `
+      <div class="tile-num ${tierClass}">P${p}</div>
+      <div class="tile-odds">${prob}</div>
+    `;
+    grid.appendChild(tile);
+  }
+
+  document.getElementById('ref-selected-phase-num').textContent = `Phase ${refSelectedPhase}`;
+  const selectedWeight = PHASE_WEIGHTS[refSelectedPhase - 1];
+  document.getElementById('ref-selected-phase-odds').textContent = `${selectedWeight.toFixed(1)}%`;
+  
+  const phaseNumEl = document.getElementById('ref-selected-phase-num');
+  phaseNumEl.className = '';
+  if (refSelectedPhase === 15) {
+    phaseNumEl.classList.add('phase-black');
+  } else if (refSelectedPhase >= 12) {
+    phaseNumEl.classList.add('phase-blue');
+  }
+
+  tbody.innerHTML = '';
+  STATS.forEach(s => {
+    const val = s.phases[refSelectedPhase - 1];
+    const tr = document.createElement('tr');
+    
+    let phaseClass = '';
+    if (refSelectedPhase === 15) phaseClass = 'phase-black';
+    else if (refSelectedPhase >= 12) phaseClass = 'phase-blue';
+
+    tr.innerHTML = `
+      <td>${s.name}</td>
+      <td class="td-c" style="text-align: center;">${(s.weight / STAT_WEIGHT_TOTAL * 100).toFixed(1)}%</td>
+      <td class="td-p ${phaseClass}" style="text-align: right; font-weight: 700;">+${val.toFixed(2)}%</td>
+    `;
     tbody.appendChild(tr);
   });
 }
@@ -1667,7 +1013,7 @@ function toggleProb() { document.getElementById('prob-panel').classList.toggle('
 //  THEME TOGGLE
 // ══════════════════════════════════════════════
 function initTheme() {
-  const saved = localStorage.getItem('ngs_theme');
+  const saved = localStorage.getItem('nikke_theme');
   if (saved === 'light') {
     document.body.classList.add('light-theme');
     updateThemeUI(true);
@@ -1678,7 +1024,7 @@ function initTheme() {
 
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-theme');
-  localStorage.setItem('ngs_theme', isLight ? 'light' : 'dark');
+  localStorage.setItem('nikke_theme', isLight ? 'light' : 'dark');
   updateThemeUI(isLight);
 }
 
@@ -1700,7 +1046,7 @@ function updateThemeUI(isLight) {
 // ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
-buildRefTable();
+renderRefSection();
 render();
 initTheme();
 log('info','Select a gear tab and roll. First roll on each piece guarantees Phase 11.');
