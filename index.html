@@ -258,9 +258,9 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(30, 58, 85, 0.4);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(30, 58, 85, 0.4);
     }
     .confirm-switch {
       position: relative;
@@ -335,8 +335,25 @@
       padding: 26px;
       max-width: 780px;
       width: 90%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
       position: relative;
       animation: modalSlideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    }
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding-right: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal-body::-webkit-scrollbar {
+      width: 4px;
+    }
+    .modal-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
     }
     @keyframes modalSlideUp {
       from { transform: translateY(30px); opacity: 0; }
@@ -435,17 +452,118 @@
       filter: brightness(1.1);
     }
     @media(max-width: 680px) {
+      .modal-content {
+        padding: 14px;
+        max-width: 96%;
+        width: 96%;
+        max-height: 95vh;
+      }
+      .modal-header {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+      }
+      .modal-header h2 {
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+      .modal-sub {
+        font-size: 9px;
+      }
+      .comparison-grid {
+        grid-template-columns: 1fr auto 1fr;
+        gap: 6px;
+        margin-bottom: 0;
+      }
+      .comparison-col h3 {
+        font-size: 9px;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        text-align: center;
+      }
+      .modal-slots {
+        gap: 4px;
+      }
+      .modal-slots .slot {
+        padding: 5px 6px;
+        gap: 4px;
+        border-radius: 4px;
+      }
+      .modal-slots .slot-indicator {
+        width: 3px;
+        height: 22px;
+      }
+      .modal-slots .slot-label {
+        font-size: 8px;
+        width: 24px;
+        line-height: 1.1;
+      }
+      .modal-slots .slot-label br,
+      .modal-slots .slot-label span {
+        display: none;
+      }
+      .modal-slots .slot-stat {
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .modal-slots .slot-phase {
+        font-size: 8px;
+      }
+      .modal-slots .slot-statval {
+        font-size: 9px;
+      }
+      .comparison-arrow {
+        font-size: 14px;
+        text-shadow: none;
+      }
+      .modal-actions {
+        flex-direction: row;
+        gap: 8px;
+      }
+      .btn-modal {
+        padding: 8px 10px;
+        font-size: 9px;
+        flex: 1;
+        text-align: center;
+        white-space: nowrap;
+      }
+    }
+
+    @media(max-width: 480px) {
       .comparison-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 8px;
+        margin-bottom: 0;
       }
       .comparison-arrow {
         transform: rotate(90deg);
         text-align: center;
-        margin: 4px 0;
+        margin: 2px 0;
+      }
+      .modal-slots .slot-label {
+        font-size: 9px;
+        width: 46px;
+      }
+      .modal-slots .slot-label br,
+      .modal-slots .slot-label span {
+        display: inline;
+      }
+      .modal-slots .slot-stat {
+        font-size: 12px;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
       }
       .modal-actions {
         flex-direction: column;
+        gap: 8px;
+      }
+      .btn-modal {
+        padding: 10px 12px;
+        font-size: 10px;
+        width: 100%;
       }
     }
 
@@ -508,10 +626,127 @@
       font-weight: 700;
       text-shadow: 0 0 6px rgba(255, 200, 70, 0.3);
     }
+
+    /* LIGHT THEME */
+    body.light-theme {
+      --bg:      #f0f4f8;
+      --bg2:     #ffffff;
+      --bg3:     #e2e8f0;
+      --panel:   #f8fafc;
+      --border:  #cbd5e1;
+      --border2: #94a3b8;
+      --accent:  #0086b3;
+      --gold:    #c28a00;
+      --green:   #0d9488;
+      --red:     #e11d48;
+      --purple:  #8b5cf6;
+      --orange:  #ea580c;
+      --text:    #1e293b;
+      --textdim: #64748b;
+      --textbrt: #0f172a;
+      --stop:    #0086b3;
+      --smid:    #8b5cf6;
+      --sbot:    #ea580c;
+    }
+    body.light-theme::after {
+      background-image: linear-gradient(rgba(0,134,179,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,134,179,.035) 1px,transparent 1px);
+    }
+    body.light-theme::before {
+      background: none;
+    }
+    body.light-theme .phase-blue {
+      color: #006699 !important;
+      text-shadow: none;
+    }
+    body.light-theme .log-entry {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    body.light-theme .btn-legend {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    body.light-theme .cost-preview {
+      background: rgba(0, 0, 0, 0.04);
+    }
+    body.light-theme .btn-roll {
+      box-shadow: 0 0 16px rgba(0, 134, 179, 0.15);
+    }
+    body.light-theme .btn-phase {
+      box-shadow: 0 0 16px rgba(234, 88, 12, 0.15);
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 24px;
+      right: 16px;
+      z-index: 100;
+    }
+    .btn-theme {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    }
+    .btn-theme:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+    }
+    @media (max-width: 600px) {
+      .theme-toggle {
+        position: static;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+      .resource-bar {
+        gap: 6px;
+      }
+      .res-card {
+        flex: 1;
+        min-width: 0;
+        padding: 8px 6px;
+        gap: 6px;
+        justify-content: center;
+      }
+      .res-icon, .gear-icon {
+        width: 24px;
+        height: 24px;
+      }
+      .res-label {
+        font-size: 8px;
+        letter-spacing: 0.5px;
+      }
+      .res-value {
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 <body>
+<script>
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-theme');
+  }
+</script>
 <div class="app">
+
+  <!-- THEME TOGGLE -->
+  <div class="theme-toggle">
+    <button class="btn-theme" id="theme-btn" onclick="toggleTheme()">
+      <span id="theme-icon">☀️</span> <span id="theme-text">LIGHT</span>
+    </button>
+  </div>
 
   <header>
     <div class="header-sub">Overload Gear</div>
@@ -547,6 +782,13 @@
           <div class="gear-title" id="gear-title">HEAD</div>
           <div class="gear-badge badge-fresh" id="gear-badge">FRESH</div>
         </div>
+        <div class="confirm-toggle-row">
+          <label class="confirm-switch">
+            <input type="checkbox" id="confirm-rolls" checked>
+            <span class="confirm-slider"></span>
+          </label>
+          <label for="confirm-rolls" class="confirm-label">Confirm before applying rolls</label>
+        </div>
         <div class="slots-grid" id="slots-grid"></div>
         <div class="actions-row">
           <button class="btn-primary btn-roll"  onclick="doRoll()">🔄 Change Effects</button>
@@ -555,13 +797,6 @@
         <div class="cost-preview">
           Change Effects: <span id="cost-roll">—</span> &nbsp;|&nbsp;
           Reset Attributes: <span id="cost-phase">—</span>
-        </div>
-        <div class="confirm-toggle-row">
-          <label class="confirm-switch">
-            <input type="checkbox" id="confirm-rolls" checked>
-            <span class="confirm-slider"></span>
-          </label>
-          <label for="confirm-rolls" class="confirm-label">Confirm before applying rolls</label>
         </div>
         <button class="btn-view-odds" onclick="openOddsModal()">📊 View Next Roll Odds</button>
         <div class="btn-legend">
@@ -618,22 +853,24 @@
       <div class="modal-sub">Compare changes and choose which effects to keep</div>
     </div>
     
-    <div class="comparison-grid">
-      <!-- Left Column: Current Effects -->
-      <div class="comparison-col">
-        <h3>Current Effects</h3>
-        <div class="modal-slots" id="modal-old-slots"></div>
-      </div>
-      
-      <!-- Arrow separator -->
-      <div class="comparison-arrow">
-        <span>➔</span>
-      </div>
-      
-      <!-- Right Column: New Effects -->
-      <div class="comparison-col">
-        <h3>New Effects</h3>
-        <div class="modal-slots" id="modal-new-slots"></div>
+    <div class="modal-body">
+      <div class="comparison-grid">
+        <!-- Left Column: Current Effects -->
+        <div class="comparison-col">
+          <h3>Current Effects</h3>
+          <div class="modal-slots" id="modal-old-slots"></div>
+        </div>
+        
+        <!-- Arrow separator -->
+        <div class="comparison-arrow">
+          <span>➔</span>
+        </div>
+        
+        <!-- Right Column: New Effects -->
+        <div class="comparison-col">
+          <h3>New Effects</h3>
+          <div class="modal-slots" id="modal-new-slots"></div>
+        </div>
       </div>
     </div>
     
@@ -651,7 +888,7 @@
       <div class="modal-sub" id="odds-modal-sub">// Probability of obtaining each stat on TOP, MID, and BOT slots</div>
     </div>
     
-    <div style="overflow-x: auto; margin-bottom: 20px;">
+    <div class="modal-body" style="overflow-x: auto; margin-bottom: 0;">
       <table class="odds-table">
         <thead>
           <tr>
@@ -1403,10 +1640,45 @@ function buildRefTable() {
 function toggleProb() { document.getElementById('prob-panel').classList.toggle('open'); }
 
 // ══════════════════════════════════════════════
+//  THEME TOGGLE
+// ══════════════════════════════════════════════
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.body.classList.add('light-theme');
+    updateThemeUI(true);
+  } else {
+    updateThemeUI(false);
+  }
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  updateThemeUI(isLight);
+}
+
+function updateThemeUI(isLight) {
+  const btn = document.getElementById('theme-btn');
+  const icon = document.getElementById('theme-icon');
+  const text = document.getElementById('theme-text');
+  if (!btn || !icon || !text) return;
+  
+  if (isLight) {
+    icon.textContent = '🌙';
+    text.textContent = 'DARK';
+  } else {
+    icon.textContent = '☀️';
+    text.textContent = 'LIGHT';
+  }
+}
+
+// ══════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════
 buildRefTable();
 render();
+initTheme();
 log('info','Select a gear tab and roll. First roll on each piece guarantees Phase 11.');
 </script>
 </body>
