@@ -1174,50 +1174,74 @@ function resolveConfirm(accept) {
 }
 
 function calculateSlotOdds() {
-  const trials = 10000;
-  const counts = [{}, {}, {}];
-  
-  // Initialize counts
-  STATS.forEach(s => {
-    counts[0][s.name] = 0;
-    counts[1][s.name] = 0;
-    counts[2][s.name] = 0;
-  });
-
   const slots = gear().slots;
   const lockedStats = slots
     .filter(s => s.present && (s.locked || s.perm) && s.stat)
     .map(s => s.stat);
 
-  for (let t = 0; t < trials; t++) {
-    const used = [...lockedStats];
-    
-    slots.forEach((s, i) => {
-      if (s.locked || s.perm) {
-        if (s.stat) {
-          counts[i][s.stat]++;
-        }
-        return;
-      }
-      
-      const isPresent = (i === 0) ? true : (Math.random() < SLOT_CHANCES[i]);
-      if (!isPresent) return;
-      
-      const selected = rollStat(used);
-      if (selected) {
-        counts[i][selected]++;
-        used.push(selected);
-      }
-    });
-  }
-
+  // Initialize odds for all stats on all 3 slots to 0
   const odds = [{}, {}, {}];
   STATS.forEach(s => {
-    odds[0][s.name] = (counts[0][s.name] / trials) * 100;
-    odds[1][s.name] = (counts[1][s.name] / trials) * 100;
-    odds[2][s.name] = (counts[2][s.name] / trials) * 100;
+    odds[0][s.name] = 0;
+    odds[1][s.name] = 0;
+    odds[2][s.name] = 0;
   });
-  
+
+  // States: key is sorted list of chosen stats names, value is the probability of this state.
+  let states = {
+    [lockedStats.slice().sort().join(',')]: 1.0
+  };
+
+  slots.forEach((slot, i) => {
+    const isLocked = slot.present && (slot.locked || slot.perm) && slot.stat;
+    const nextStates = {};
+
+    for (const [key, p] of Object.entries(states)) {
+      const chosenList = key ? key.split(',') : [];
+      
+      if (isLocked) {
+        // Slot is locked. The stat is guaranteed to be slot.stat.
+        odds[i][slot.stat] += p;
+        // Transition: state remains the same since the locked stat was already in chosenList
+        nextStates[key] = (nextStates[key] || 0) + p;
+      } else {
+        const pPres = SLOT_CHANCES[i];
+        
+        // Case 1: Slot is not present (probability 1 - pPres)
+        if (pPres < 1.0) {
+          nextStates[key] = (nextStates[key] || 0) + p * (1 - pPres);
+        }
+
+        // Case 2: Slot is present (probability pPres)
+        const availableStats = STATS.filter(s => !chosenList.includes(s.name));
+        const totalWeight = availableStats.reduce((sum, s) => sum + s.weight, 0);
+
+        if (totalWeight > 0) {
+          availableStats.forEach(s => {
+            const pTrans = s.weight / totalWeight;
+            const pChoice = p * pPres * pTrans;
+            
+            // Record that slot i got this stat with probability pChoice
+            odds[i][s.name] += pChoice;
+
+            // Transition to new state (add s.name to chosen list and sort)
+            const newChosen = [...chosenList, s.name].sort().join(',');
+            nextStates[newChosen] = (nextStates[newChosen] || 0) + pChoice;
+          });
+        }
+      }
+    }
+
+    states = nextStates;
+  });
+
+  // Convert to percentages
+  STATS.forEach(s => {
+    odds[0][s.name] *= 100;
+    odds[1][s.name] *= 100;
+    odds[2][s.name] *= 100;
+  });
+
   return odds;
 }
 
