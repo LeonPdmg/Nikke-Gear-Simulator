@@ -406,7 +406,7 @@ body.light-theme .ref-phase-tile.active .tile-num.tile-black {
 @media(max-width:500px){
   .actions-row { flex-direction:column; }
   .slot { flex-wrap:wrap; }
-  .slot-actions { margin-left:58px; }
+  .slot-actions { margin-left:58px; flex-basis:100%; }
 }
 
 /* CUSTOM TOGGLE SWITCH */
