@@ -18,6 +18,8 @@ Since this is a client-side static web application, no installation or compilati
 1. Clone or download the repository.
 2. Open `index.html` in any web browser (Chrome, Firefox, Safari, Edge).
 
+Alternatively, you can access the live application directly at https://leonpdmg.github.io/Gear-Reroll/
+
 ## Files
 
 - `index.html` - Contains the structure, simulation logic, and interactive components.
