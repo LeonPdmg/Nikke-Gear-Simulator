@@ -19,6 +19,12 @@
   --sbot:    #ff6b35;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button, .confirm-slider, .confirm-label, .comparison-arrow {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
 body::before { content:''; position:fixed; inset:0; pointer-events:none; z-index:9999;
   background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px); }
