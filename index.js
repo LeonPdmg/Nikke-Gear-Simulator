@@ -215,6 +215,9 @@ function showConfirmModal() {
   modal.style.display = 'flex';
   void modal.offsetWidth;
   modal.classList.add('show');
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
 }
 
 function resolveConfirm(accept) {
@@ -378,6 +381,9 @@ function openOddsModal() {
   modal.style.display = 'flex';
   void modal.offsetWidth;
   modal.classList.add('show');
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
 }
 
 function closeOddsModal() {
@@ -837,6 +843,20 @@ function updateThemeUI(isLight) {
     text.textContent = 'LIGHT';
   }
 }
+
+// Prevent Enter/Space keys from triggering background buttons or modal actions unintentionally when modals are open
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    const confirmModal = document.getElementById('confirm-modal');
+    const oddsModal = document.getElementById('odds-modal');
+    const confirmOpen = confirmModal && confirmModal.classList.contains('show');
+    const oddsOpen = oddsModal && oddsModal.classList.contains('show');
+    if (confirmOpen || oddsOpen) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }
+}, true);
 
 // ══════════════════════════════════════════════
 //  INIT
