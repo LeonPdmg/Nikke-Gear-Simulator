@@ -22,6 +22,7 @@ Alternatively, you can access the live application directly at https://leonpdmg.
 
 ## Files
 
-- `index.html` - Contains the structure, simulation logic, and interactive components.
+- `index.html` - Contains the structure and interactive components.
 - `index.css` - Custom styling sheet containing layout styles, light/dark theme variables, and tier effects.
-- `Rock.png` - Asset image for Custom Modules.
+- `index.js` - Simulation logic.
+  
