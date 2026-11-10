@@ -5,6 +5,7 @@ A interactive, mobile-friendly web application designed to simulate the **Overlo
 ## Features
 
 - **Sequential Slot Rerolling**: Simulates the exact top, middle, and bottom slot rolling probabilities (including lock conditions and duplicate stat exclusion pools).
+- **No Repeat Rolls**: Matches the game update where a slot can never reroll into the exact same stat and value it already had (both Change Effects and Reset Attributes reroll internally on a repeat).
 - **Slot-Specific Odds**: View the exact analytical probability percentages for every stat on a per-slot basis (Top, Middle, Bottom) based on what you have locked.
 - **Interactive Phase Reference**: Check weight rates and exact attribute value stats for all Phase levels (1 to 15), featuring custom styled glowing "Black Line" values for Phase 15.
 - **Theme Toggle**: Support for a premium tech-dark theme (default) and a clean, high-contrast light theme.

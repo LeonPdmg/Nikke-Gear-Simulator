@@ -15,6 +15,7 @@ const STATS = [
 const STAT_WEIGHT_TOTAL = STATS.reduce((s,x)=>s+x.weight,0);
 const STAT_MAX = Object.fromEntries(STATS.map(s=>[s.name, s.phases[14]]));
 const PHASE_WEIGHTS = [12,12,12,12,12, 7,7,7,7,7, 1,1,1,1,1];
+const PHASE_WEIGHT_TOTAL = PHASE_WEIGHTS.reduce((a,b)=>a+b,0);
 const SLOT_CHANCES  = [1.0, 0.5, 0.3];
 const SLOT_LABELS   = ["TOP","MID","BOT"];
 const SLOT_CLS      = ["slot-top","slot-mid","slot-bot"];
@@ -127,11 +128,17 @@ function doRoll() {
     .filter(s => (s.locked||s.perm) && s.stat)
     .map(s => s.stat);
 
-  newSlots.forEach(s=>{
+  newSlots.forEach((s,i)=>{
     if (s.locked||s.perm) return;
     if (!s.present) return;
-    s.stat  = rollStat(used);
-    s.phase = rollPhase(first);
+    // A slot can never roll the exact same stat + value it had before;
+    // the game rerolls internally until the result differs.
+    const prev = oldSlots[i];
+    const hadPrev = !first && prev.present && prev.stat && prev.phase;
+    do {
+      s.stat  = rollStat(used);
+      s.phase = rollPhase(first);
+    } while (hadPrev && s.stat === prev.stat && s.phase === prev.phase);
     if (s.stat) used.push(s.stat);
   });
 
@@ -175,7 +182,9 @@ function doRerollPhase() {
 
   newSlots.forEach(s=>{
     if (s.locked||s.perm||!s.present||!s.stat) return;
-    s.phase = rollPhase(false);
+    // Phase must differ from the current one (same stat + value never repeats)
+    const prevPhase = s.phase;
+    do { s.phase = rollPhase(false); } while (s.phase === prevPhase);
   });
 
   // Temp locks expire after rolling regardless of confirmation decision
@@ -284,6 +293,8 @@ function calculateSlotOdds() {
 
   slots.forEach((slot, i) => {
     const isLocked = slot.present && (slot.locked || slot.perm) && slot.stat;
+    const hasPrev = gear().rolled && slot.present && slot.stat && slot.phase;
+    const prevPhaseChance = hasPrev ? PHASE_WEIGHTS[slot.phase - 1] / PHASE_WEIGHT_TOTAL : 0;
     const nextStates = {};
 
     for (const [key, p] of Object.entries(states)) {
@@ -303,12 +314,15 @@ function calculateSlotOdds() {
         }
 
         // Case 2: Slot is present (probability pPres)
+        // The exact previous stat + phase on this slot is rerolled internally,
+        // so that stat's weight shrinks by the chance of hitting the same phase.
         const availableStats = STATS.filter(s => !chosenList.includes(s.name));
-        const totalWeight = availableStats.reduce((sum, s) => sum + s.weight, 0);
+        const effWeight = s => (hasPrev && s.name === slot.stat) ? s.weight * (1 - prevPhaseChance) : s.weight;
+        const totalWeight = availableStats.reduce((sum, s) => sum + effWeight(s), 0);
 
         if (totalWeight > 0) {
           availableStats.forEach(s => {
-            const pTrans = s.weight / totalWeight;
+            const pTrans = effWeight(s) / totalWeight;
             const pChoice = p * pPres * pTrans;
 
             // Record that slot i got this stat with probability pChoice
